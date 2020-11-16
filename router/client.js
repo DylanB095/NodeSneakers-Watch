@@ -25,13 +25,26 @@ const database = require('../database/database');
 const nodemailer = require('nodemailer')
 
 // Ce module est un plugin de transport pour Nodemailer qui permet d’envoyer via l’API Web de SendGrid 
-const sendgridTransport = require('nodemailer-sendgrid-transport')
+/* const sendgridTransport = require('nodemailer-sendgrid-transport')
 
 const transporter = nodemailer.createTransport(sendgridTransport({
     auth: {
         api_key: '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'
     }
-}))
+})) */
+const transporter = nodemailer.createTransport({
+    host: 'mail.sneakers-watch.fr.',
+    port: 587,
+    secure: false,
+    auth: {
+        user: "contact@sneakers-watch.fr",
+        pass: "OVHcloudsneakerswatch",
+    },
+    tls: {
+        // do not fail on invalid certs
+        rejectUnauthorized: false
+    }
+});
 
 /* ------------------------------------------------------------------------------------------------------------------------------------------ */
 
@@ -91,10 +104,10 @@ client.post("/register", (req, res) => {
 
                         transporter.sendMail({
 
-                            to: req.body.email,
-                            from: 'sneakers.w0atch@gmail.com',
-                            subject: 'Confirmation inscription à Sneakers Watch',
-                            html: `
+                                to: req.body.email,
+                                from: 'contact@sneakers-watch.fr',
+                                subject: 'Confirmation inscription à Sneakers Watch',
+                                html: `
                 
                             <div  style="height:500px; width: 100%; background-image: url(https://www.cjoint.com/doc/20_09/JInrmwR8Uvx_cqNgx7LQoc.jpg); background-size: cover; background-position: center; background-repeat: no-repeat;">
                             <div>
@@ -121,8 +134,8 @@ client.post("/register", (req, res) => {
                                    
                                    
                                     </div>`
-                        })
-                        // je cree la signature de mon token en lui donnant mon secret_key=RS9
+                            })
+                            // je cree la signature de mon token en lui donnant mon secret_key=RS9
                         let token = jwt.sign(client.dataValues, process.env.SECRET_KEY, {
                             expiresIn: 1440
                         });
@@ -223,7 +236,7 @@ client.get("/findone/:email", (req, res) => {
 client.get("/findAll", (req, res) => {
     database.client.findAll({
             attributes: {
-                include:[],
+                include: [],
                 exclude: ["password"]
             }
         }).then(client => {
@@ -251,11 +264,11 @@ client.post("/EnvoieDeMailChangement", (req, res) => {
         })
         .then(client => {
             if (client) {
-                
+
                 transporter.sendMail({
 
                     to: req.body.email,
-                    from: 'sneakers.w0atch@gmail.com',
+                    from: 'contact@sneakers-watch.fr',
                     subject: 'Modification Mot de Passe',
                     html: `
         
@@ -298,14 +311,14 @@ client.post("/EnvoieDeMailChangement", (req, res) => {
 client.post("/MdpModification", (req, res) => {
 
     database.client.findOne({
-            where: {
-                email: req.body.email
-            }
-        })
+        where: {
+            email: req.body.email
+        }
+    })
 
-        .then(client => {
+    .then(client => {
             if (client) {
-                
+
                 const hash = bcrypt.hashSync(req.body.password, 10);
 
                 client.update({
@@ -325,75 +338,72 @@ client.post("/MdpModification", (req, res) => {
 
 /* ---------------------------------------------------------------- UPDATE ---------------------------------------------------------------------- */
 
-client.post("/MAJClient", (req,res) =>{
+client.post("/MAJClient", (req, res) => {
 
     database.client.findOne({
 
-        where: {email: req.body.email}
+        where: { email: req.body.email }
 
     })
 
     .then(client => {
-        if(client) {
+            if (client) {
 
-            client.update({
+                client.update({
 
-                nom: req.body.nom,
-                prenom: req.body.prenom,
-                email: req.body.email,
-                telephone: req.body.telephone,
-                adresse: req.body.adresse,
-                code_postal: req.body.code_postal,
-                ville: req.body.ville,
-                /* pays: req.body.pays, */
-                password: req.body.password,
+                    nom: req.body.nom,
+                    prenom: req.body.prenom,
+                    email: req.body.email,
+                    telephone: req.body.telephone,
+                    adresse: req.body.adresse,
+                    code_postal: req.body.code_postal,
+                    ville: req.body.ville,
+                    /* pays: req.body.pays, */
+                    password: req.body.password,
 
-            })
-        }
-        else {
-            res.json({
-                error: "Mise a jour non effectuée"
-            })
-        }
-    })
-    .catch(err => {
-        res.json('error' + err)
-    })
+                })
+            } else {
+                res.json({
+                    error: "Mise a jour non effectuée"
+                })
+            }
+        })
+        .catch(err => {
+            res.json('error' + err)
+        })
 })
 
 /* ---------------------------------------------------------------- DELETE ------------------------------------------------------------------------------------- */
 
-client.delete("/SUP/:email", (req,res) => {
+client.delete("/SUP/:email", (req, res) => {
 
     database.client.findOne({
-        where: { email:req.params.email}
+        where: { email: req.params.email }
     })
 
     .then(client => {
 
-        if(client){
+            if (client) {
 
-            client.destroy()
-            .then(() => {
+                client.destroy()
+                    .then(() => {
 
-                res.json("client Supprimé")
-            })
+                        res.json("client Supprimé")
+                    })
 
-            .catch(err => {
-                res.json("error" + err)
-            })
+                .catch(err => {
+                    res.json("error" + err)
+                })
 
-        } 
-        
-        else {
-            res.json({
-                error:"Vous ne pouvez pas supprimé ce client il n'existe pas dans la database"
-            })
-        }
-    })
-    .catch(err => {
-        res.json("error" + err)
-    })
+            } else {
+                res.json({
+                    error: "Vous ne pouvez pas supprimé ce client il n'existe pas dans la database"
+                })
+            }
+        })
+        .catch(err => {
+            res.json("error" + err)
+        })
 })
 
 

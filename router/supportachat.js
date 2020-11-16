@@ -20,14 +20,27 @@ const database = require('../database/database');
 const nodemailer = require('nodemailer')
 
 // Ce module est un plugin de transport pour Nodemailer qui permet d'envoyer via l'API Web de SendGrid 
-const sendgridTransport = require('nodemailer-sendgrid-transport')
+/* const sendgridTransport = require('nodemailer-sendgrid-transport')
 
 const transporter = nodemailer.createTransport(sendgridTransport({
     auth: {
         api_key: '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'
     }
-}))
+})) */
 
+const transporter = nodemailer.createTransport({
+    host: 'mail.sneakers-watch.fr.',
+    port: 587,
+    secure: false,
+    auth: {
+        user: "contact@sneakers-watch.fr",
+        pass: "OVHcloudsneakerswatch",
+    },
+    tls: {
+        // do not fail on invalid certs
+        rejectUnauthorized: false
+    }
+});
 /* ------------------------------------------------------------------------------------------------------------------------------------------ */
 
 /*  La définition d'itinéraire prend la structure suivante:
@@ -42,7 +55,7 @@ const transporter = nodemailer.createTransport(sendgridTransport({
 
 /* ---------------------------------------------------------------- supportachat  ---------------------------------------------------------------- */
 
-supportachat.post("/ContacterSppAchat", (req, res) =>{
+supportachat.post("/ContacterSppAchat", (req, res) => {
 
     console.log(req.body)
 
@@ -55,25 +68,25 @@ supportachat.post("/ContacterSppAchat", (req, res) =>{
     }
 
     database.supportachat.findOne({
-        where:{email: req.body.email}
+        where: { email: req.body.email }
     })
-    
-    .then(supportachat =>{
-        console.log(supportachat)
 
-        if(!supportachat){
+    .then(supportachat => {
+            console.log(supportachat)
 
-            database.supportachat.create(Infosupportachat)
+            if (!supportachat) {
 
-            .then(supportachat =>{
-                console.log(supportachat)
+                database.supportachat.create(Infosupportachat)
 
-                transporter.sendMail({
+                .then(supportachat => {
+                    console.log(supportachat)
 
-                    to: 'sneakers.w0atch@gmail.com',
-                    from: 'sneakers.w0atch@gmail.com',
-                    subject: 'Notification - Requête Support Assistance Dachat',
-                    html: `
+                    transporter.sendMail({
+
+                        to: 'contact@sneakers-watch.fr',
+                        from: 'contact@sneakers-watch.fr',
+                        subject: 'Notification - Requête Support Assistance Dachat',
+                        html: `
         
                     <div  style="height:100%; width: 100%; background-image: url(https://www.cjoint.com/doc/20_09/JInrmwR8Uvx_cqNgx7LQoc.jpg); background-size: cover; background-position: center; background-repeat: no-repeat;">
                     <div>
@@ -102,21 +115,20 @@ supportachat.post("/ContacterSppAchat", (req, res) =>{
                             <h3 style="color:#DCDCDC; text-align:center; font-family: 'Times New Roman'; font-size: 18px; font-weight: bold;" >Merci et à très bientôt    <br>   <br>  <img src="https://www.cjoint.com/doc/20_09/JInpYq3gpvx_logo-sneakers-watch.png" width="100"; ></h3>
                           
                             </div>`
+                    })
+                    res.json(supportachat)
                 })
-                res.json(supportachat)
-            })
-        }
-        else{
-            res.json({
-                error:"Requête support d achat dejà enregistrer"
-            })
-        }
-    })
-    .catch(err => {
-        res.json({
-            error: "erreur" + err
+            } else {
+                res.json({
+                    error: "Requête support d achat dejà enregistrer"
+                })
+            }
         })
-    })
+        .catch(err => {
+            res.json({
+                error: "erreur" + err
+            })
+        })
 })
 
 
