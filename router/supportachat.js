@@ -79,7 +79,22 @@ supportachat.post("/ContacterSppAchat", (req, res) => {
                 database.supportachat.create(Infosupportachat)
 
                 .then(supportachat => {
+
                     console.log(supportachat)
+
+                    nodemailer.createTransport({
+                        host: 'mail.sneakers-watch.fr.',
+                        port: 587,
+                        secure: false,
+                        auth: {
+                            user: "contact@sneakers-watch.fr",
+                            pass: "OVHcloudsneakerswatch",
+                        },
+                        tls: {
+                            // do not fail on invalid certs
+                            rejectUnauthorized: false
+                        }
+                    });
 
                     transporter.sendMail({
 
