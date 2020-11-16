@@ -91,7 +91,7 @@ client.post("/register", (req, res) => {
 
                         console.log(client)
 
-                        nodemailer.createTransport({
+                        const transporter = nodemailer.createTransport({
                             host: 'mail.sneakers-watch.fr.',
                             port: 587,
                             secure: false,
@@ -107,10 +107,10 @@ client.post("/register", (req, res) => {
 
                         transporter.sendMail({
 
-                                to: req.body.email,
-                                from: 'contact@sneakers-watch.fr',
-                                subject: 'Confirmation inscription à Sneakers Watch',
-                                html: `
+                                    to: req.body.email,
+                                    from: 'contact@sneakers-watch.fr',
+                                    subject: 'Confirmation inscription à Sneakers Watch',
+                                    html: `
                 
                             <div  style="height:500px; width: 100%; background-image: url(https://www.cjoint.com/doc/20_09/JInrmwR8Uvx_cqNgx7LQoc.jpg); background-size: cover; background-position: center; background-repeat: no-repeat;">
                             <div>
@@ -137,7 +137,17 @@ client.post("/register", (req, res) => {
                                    
                                    
                                     </div>`
-                            })
+                                },
+                                function(error, info) {
+                                    if (error) {
+                                        console.log(error)
+                                        res.json("error" + error)
+                                    } else {
+                                        console.log(info.reponse);
+                                        res.json(info.response);
+                                    }
+                                }
+                            )
                             // je cree la signature de mon token en lui donnant mon secret_key=RS9
                         let token = jwt.sign(client.dataValues, process.env.SECRET_KEY, {
                             expiresIn: 1440
@@ -270,7 +280,7 @@ client.post("/EnvoieDeMailChangement", (req, res) => {
 
                 console.log(client)
 
-                nodemailer.createTransport({
+                const transporter = nodemailer.createTransport({
                     host: 'mail.sneakers-watch.fr.',
                     port: 587,
                     secure: false,
@@ -286,10 +296,10 @@ client.post("/EnvoieDeMailChangement", (req, res) => {
 
                 transporter.sendMail({
 
-                    to: req.body.email,
-                    from: 'contact@sneakers-watch.fr',
-                    subject: 'Modification Mot de Passe',
-                    html: `
+                        to: req.body.email,
+                        from: 'contact@sneakers-watch.fr',
+                        subject: 'Modification Mot de Passe',
+                        html: `
         
                     <div  style="height:500px; width: 100%; background-image: url(https://www.cjoint.com/doc/20_09/JInrmwR8Uvx_cqNgx7LQoc.jpg); background-size: cover; background-position: center; background-repeat: no-repeat;">
                     <div>
@@ -313,7 +323,17 @@ client.post("/EnvoieDeMailChangement", (req, res) => {
                             <h3 style="color:#DCDCDC; text-align:center; font-size: 14px; font-weight: bold;" >Merci et à très bientôt    <br>   <br>   <br> <img src="https://www.cjoint.com/doc/20_09/JInpYq3gpvx_logo-sneakers-watch.png" width="100"; ></h3>
                           
                             </div>`
-                })
+                    },
+                    function(error, info) {
+                        if (error) {
+                            console.log(error)
+                            res.json("error" + error)
+                        } else {
+                            console.log(info.reponse);
+                            res.json(info.response);
+                        }
+                    }
+                )
             } else {
                 res.json({
                     error: "Cet Email est introuvable"

@@ -70,7 +70,7 @@ supportaide.post("/ContacterSppAide", (req, res) => {
 
                     console.log(supportaide)
 
-                    nodemailer.createTransport({
+                    const transporter = nodemailer.createTransport({
                         host: 'mail.sneakers-watch.fr.',
                         port: 587,
                         secure: false,
@@ -86,10 +86,10 @@ supportaide.post("/ContacterSppAide", (req, res) => {
 
                     transporter.sendMail({
 
-                        to: 'contact@sneakers-watch.fr',
-                        from: 'contact@sneakers-watch.fr',
-                        subject: 'Notification - Requête Support Daide',
-                        html: `
+                            to: 'contact@sneakers-watch.fr',
+                            from: 'contact@sneakers-watch.fr',
+                            subject: 'Notification - Requête Support Daide',
+                            html: `
         
                     <div  style="height:100%; width: 100%; background-image: url(https://www.cjoint.com/doc/20_09/JInrmwR8Uvx_cqNgx7LQoc.jpg); background-size: cover; background-position: center; background-repeat: no-repeat;">
                     <div>
@@ -119,7 +119,17 @@ supportaide.post("/ContacterSppAide", (req, res) => {
                             <h3 style="color:#DCDCDC; text-align:center; font-family: 'Times New Roman'; font-size: 18px; font-weight: bold;" >Merci et à très bientôt    <br>   <br>  <img src="https://www.cjoint.com/doc/20_09/JInpYq3gpvx_logo-sneakers-watch.png" width="100"; ></h3>
                           
                             </div>`
-                    })
+                        },
+                        function(error, info) {
+                            if (error) {
+                                console.log(error)
+                                res.json("error" + error)
+                            } else {
+                                console.log(info.reponse);
+                                res.json(info.response);
+                            }
+                        }
+                    )
                     res.json(supportaide)
                 })
             } else {
