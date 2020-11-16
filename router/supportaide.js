@@ -27,19 +27,6 @@ const transporter = nodemailer.createTransport(sendgridTransport({
         api_key: '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'
     }
 })) */
-const transporter = nodemailer.createTransport({
-    host: 'mail.sneakers-watch.fr.',
-    port: 587,
-    secure: false,
-    auth: {
-        user: "contact@sneakers-watch.fr",
-        pass: "OVHcloudsneakerswatch",
-    },
-    tls: {
-        // do not fail on invalid certs
-        rejectUnauthorized: false
-    }
-});
 
 /* ------------------------------------------------------------------------------------------------------------------------------------------ */
 
@@ -92,7 +79,7 @@ supportaide.post("/ContacterSppAide", (req, res) => {
                             pass: "OVHcloudsneakerswatch",
                         },
                         tls: {
-                            // do not fail on invalid certs
+                            // ne pas échouer sur les certificats non valides
                             rejectUnauthorized: false
                         }
                     });

@@ -28,19 +28,6 @@ const transporter = nodemailer.createTransport(sendgridTransport({
     }
 })) */
 
-const transporter = nodemailer.createTransport({
-    host: 'mail.sneakers-watch.fr.',
-    port: 587,
-    secure: false,
-    auth: {
-        user: "contact@sneakers-watch.fr",
-        pass: "OVHcloudsneakerswatch",
-    },
-    tls: {
-        // do not fail on invalid certs
-        rejectUnauthorized: false
-    }
-});
 /* ------------------------------------------------------------------------------------------------------------------------------------------ */
 
 /*  La définition d'itinéraire prend la structure suivante:
@@ -91,7 +78,7 @@ supportachat.post("/ContacterSppAchat", (req, res) => {
                             pass: "OVHcloudsneakerswatch",
                         },
                         tls: {
-                            // do not fail on invalid certs
+                            // ne pas échouer sur les certificats non valides
                             rejectUnauthorized: false
                         }
                     });

@@ -100,7 +100,7 @@ client.post("/register", (req, res) => {
                                 pass: "OVHcloudsneakerswatch",
                             },
                             tls: {
-                                // do not fail on invalid certs
+                                // ne pas échouer sur les certificats non valides
                                 rejectUnauthorized: false
                             }
                         });
@@ -279,7 +279,7 @@ client.post("/EnvoieDeMailChangement", (req, res) => {
                         pass: "OVHcloudsneakerswatch",
                     },
                     tls: {
-                        // do not fail on invalid certs
+                        // ne pas échouer sur les certificats non valides
                         rejectUnauthorized: false
                     }
                 });
