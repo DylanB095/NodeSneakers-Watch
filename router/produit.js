@@ -12,7 +12,7 @@ const produit = express.Router();
 
 const database = require('../database/database');
 
-
+/* Le where option est utilisée pour filtrer la requête. Il existe de nombreux opérateurs à utiliser pour la whereclause, disponibles sous forme de symboles à partir de Op. */
 const Sequelize = require("sequelize");
 const Op = Sequelize.Op;
 /* --------------------------------------------------------------------------------------------------------------------------------------------- */
